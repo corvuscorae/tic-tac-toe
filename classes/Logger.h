@@ -49,6 +49,17 @@ private:
     std::string filename;
     static Logger* instance;
 
+    // UI
+    bool show_game_panel = true;
+    bool show_game_log = true;
+
+    // logging options
+    bool log_to_console = true;
+    bool log_to_file = false;
+    bool show_info = true;
+    bool show_warn = true;
+    bool show_error = true;
+
     Logger() {};
 
 public:
@@ -102,4 +113,6 @@ public:
     LogItem get(int i);
     std::string print_last();
     std::string print(int i);
+
+    void initUI();
 };
