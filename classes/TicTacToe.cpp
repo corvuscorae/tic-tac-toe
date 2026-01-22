@@ -1,4 +1,5 @@
 #include "TicTacToe.h"
+#include <iostream>
 
 // -----------------------------------------------------------------------------
 // TicTacToe.cpp
@@ -89,14 +90,12 @@ bool TicTacToe::actionForEmptyHolder(BitHolder *holder)
     if(holder->bit()) return false;
 
     // 3) Place the current player's piece on this holder:
-    //    - Figure out whose turn it is (getCurrentPlayer()->playerNumber()).
-    int player_id = getCurrentPlayer()->playerNumber();
-    //    - Create a Bit via PieceForPlayer(currentPlayerIndex).
-    Bit* new_bit = PieceForPlayer(player_id);
-    //    - Position it at the holder's position (holder->getPosition()).
-    new_bit->setPosition(holder->getPosition());
-    //    - Assign it to the holder: holder->setBit(newBit);
-    holder->setBit(new_bit);
+    int player_id = getCurrentPlayer()->playerNumber(); // Figure out whose turn it is (getCurrentPlayer()->playerNumber()).
+    
+    Bit* new_bit = PieceForPlayer(player_id);           // Create a Bit via PieceForPlayer(currentPlayerIndex).
+    new_bit->setPosition(holder->getPosition());        // Position it at the holder's position (holder->getPosition()).
+
+    holder->setBit(new_bit);                            // Assign it to the holder: holder->setBit(newBit);
 
     // 4) Return whether we actually placed a piece. true = acted, false = ignored.
     return true; // replace with true if you complete a successful placement    
@@ -193,6 +192,7 @@ std::string TicTacToe::stateString() const
     // the order should be left-to-right, top-to-bottom
     // for example, the starting state is "000000000"
     // if player 1 has placed an X in the top-left and player 2 an O in the center, the state would be "100020000"
+
     // you can build the string using a loop and the to_string function
     // for example, to convert an integer to a string, you can use std::to_string(1) which returns "1"
     // you can get the bit at each square using _grid[y][x].bit()
@@ -200,7 +200,23 @@ std::string TicTacToe::stateString() const
     // remember that player numbers are zero-based, so add 1 to get '1' or '2'
     // if the bit is null, add '0' to the string
     // finally, return the constructed string
-    return "000000000";
+
+    std::string state = "";
+
+    for(int i = 0; i < _gameOptions.rowX; i++){
+        for(int j = 0; j < _gameOptions.rowY; j++){
+            Bit* b = _grid[j][i].bit();
+            int player = 0;
+            
+            if(b){
+                player = b->getOwner()->playerNumber() + 1;
+            }
+
+            state += std::to_string(player);
+        }
+    }
+
+    return state;
 }
 
 //
