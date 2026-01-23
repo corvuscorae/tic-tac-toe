@@ -137,6 +137,12 @@ Player* TicTacToe::ownerAt(int index ) const
     // x = index % 3 
     // if there is no bit at that location (in _grid) return nullptr
     // otherwise return the owner of the bit at that location using getOwner()
+    int i = index % _gameOptions.rowX; 
+    int j = index / _gameOptions.rowY;
+    Bit* b = _grid[i][j].bit();
+    if(b){
+        return b->getOwner();
+    }
     return nullptr;
 }
 
@@ -158,6 +164,32 @@ Player* TicTacToe::checkForWinner()
     // if there is no bit in that square, it returns nullptr
     // if you find a winning triple, return the player who owns that triple
     // otherwise return nullptr
+    int wins[8][3] = {
+        {0,1,2},
+        {3,4,5},
+        {6,7,8},
+        {0,3,6},
+        {1,4,7},
+        {2,5,8},
+        {0,4,8},
+        {2,4,6}
+    };
+
+    std::string state = stateString();
+
+    for(int i = 0; i < 8; i++){
+        int a = wins[i][0];
+        int b = wins[i][1];
+        int c = wins[i][2];
+
+        // ignore empties
+        if(state[a] == '0' || state[b] == '0' || state[c] == '0'){
+            continue;
+        }
+        if((state[a] == state[b]) && (state[b] == state[c])){
+            return ownerAt(a);    // 48 = '0'
+        }
+    }
 
     // Hint: Consider using an array to store the winning combinations
     // to avoid repetitive code
@@ -167,9 +199,17 @@ Player* TicTacToe::checkForWinner()
 bool TicTacToe::checkForDraw()
 {
     // is the board full with no winner?
+    if(checkForWinner()) return false;
+
     // if any square is empty, return false
+    for(int i = 0; i < _gameOptions.rowX; i++){
+        for(int j = 0; j < _gameOptions.rowY; j++){
+            if(_grid[i][j].empty()) return false;
+        }
+    }
+    
     // otherwise return true
-    return false;
+    return true;
 }
 
 //
