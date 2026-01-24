@@ -38,6 +38,9 @@ namespace ClassGame
     {
         game = new TicTacToe();
         game->setUpBoard();
+
+        logger->Log("Game started successfully");
+        logger->Log("Application initialized", logger->INFO, logger->GAME);
     }
 
     //
@@ -54,10 +57,15 @@ namespace ClassGame
         logger->initUI();
 
         if (!game)
+        {
+            logger->Log("Game load failed.", logger->WARN, logger->GAME);
             return;
+        }
         if (!game->getCurrentPlayer())
+        {
+            logger->Log("Player not detected.", logger->WARN, logger->GAME);
             return;
-
+        }
         ImGui::Begin("Settings");
         ImGui::Text("Current Player Number: %d", game->getCurrentPlayer()->playerNumber());
         ImGui::Text("Current Board State: %s", game->stateString().c_str());
@@ -66,8 +74,16 @@ namespace ClassGame
         {
             ImGui::Text("Game Over!");
             ImGui::Text("Winner: %d", gameWinner);
+
+            // text indicating a draw
+            if (gameWinner == -1)
+            {
+                ImGui::Text("DRAW");
+            }
+
             if (ImGui::Button("Reset Game"))
             {
+                logger->Log("Reseting game.", logger->INFO, logger->GAME);
                 game->stopGame();
                 game->setUpBoard();
                 gameOver = false;
@@ -92,11 +108,14 @@ namespace ClassGame
         {
             gameOver = true;
             gameWinner = winner->playerNumber();
+            std::string log = "Game won by player " + std::to_string(gameWinner);
+            logger->Log(log + ".", logger->INFO, logger->GAME);
         }
         if (game->checkForDraw())
         {
             gameOver = true;
             gameWinner = -1;
+            logger->Log("Game ended in a draw.", logger->INFO, logger->GAME);
         }
     }
 }
