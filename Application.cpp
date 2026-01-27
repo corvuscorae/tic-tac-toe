@@ -27,6 +27,9 @@ namespace ClassGame
     bool show_warn = true;
     bool show_error = true;
 
+    // AI toggle
+    bool AI_toggle = true;
+
     // Initialize logging system
     Logger *logger = Logger::GetInstance();
 
@@ -37,6 +40,7 @@ namespace ClassGame
     void GameStartUp()
     {
         game = new TicTacToe();
+        game->setHasAI(AI_toggle);
         game->setUpBoard();
 
         logger->Log("Game started successfully");
@@ -70,12 +74,38 @@ namespace ClassGame
         ImGui::Text("Current Player Number: %d", game->getCurrentPlayer()->playerNumber());
         ImGui::Text("Current Board State: %s", game->stateString().c_str());
 
+        // AI toggle (only clickable between games)
+        if (!gameOver && !(game->stateString() == game->initialStateString()))
+        {
+            ImGui::BeginDisabled();
+        }
+
+        ImGui::Checkbox("AI", &AI_toggle);
+        if (AI_toggle != game->gameHasAI())
+        {
+            gameOver = true;
+            if (gameOver)
+            {
+                game->stopGame();
+                game->setHasAI(AI_toggle);
+                game->setUpBoard();
+
+                gameOver = false;
+                gameWinner = -1;
+            }
+        }
+
+        if (!gameOver && !(game->stateString() == game->initialStateString()))
+        {
+            ImGui::EndDisabled();
+        }
+
+        // gameOver handling
         if (gameOver)
         {
             ImGui::Text("Game Over!");
             ImGui::Text("Winner: %d", gameWinner);
 
-            
             if (gameWinner == -1)
             {
                 ImGui::Text("DRAW"); // text indicating a draw
@@ -85,7 +115,9 @@ namespace ClassGame
             {
                 logger->Log("Reseting game.", logger->INFO, logger->GAME);
                 game->stopGame();
+                game->setHasAI(AI_toggle);
                 game->setUpBoard();
+
                 gameOver = false;
                 gameWinner = -1;
             }

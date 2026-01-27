@@ -6,7 +6,7 @@
 
 Game::Game()
 {
-	_gameOptions.AIPlayer = false;
+	_gameOptions.AIPlayer = true;
 	_gameOptions.AIPlaying = false;
 	_gameOptions.currentTurnNo = 0;
 	_gameOptions.gameNumber = -1;
@@ -167,7 +167,12 @@ bool Game::animateAndPlaceBitFromTo(Bit *bit, BitHolder*src, BitHolder*dst)
 
 bool Game::gameHasAI()
 {
-    return true;
+    return _gameOptions.AIPlaying;
+}
+
+void Game::setHasAI(bool b)
+{
+    _gameOptions.AIPlaying = b;
 }
 
 void Game::updateAI()

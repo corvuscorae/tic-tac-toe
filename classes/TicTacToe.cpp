@@ -83,7 +83,8 @@ void TicTacToe::setUpBoard()
     logger->Log("Board setup completed.", logger->INFO, logger->GAME);
 
     // set AI player
-    setAIPlayer(AI_PLAYER);
+    if (gameHasAI())
+        setAIPlayer(AI_PLAYER);
 
     // blast off!
     startGame();
@@ -148,7 +149,7 @@ void TicTacToe::stopGame()
             _grid[i][j].destroyBit();
         }
     }
-    
+
     logger->Log("Board cleared!", logger->INFO, logger->GAME);
 }
 
@@ -165,7 +166,7 @@ Player *TicTacToe::ownerAt(int index) const
     Bit *b = _grid[i][j].bit();
     if (b)
     {
-        return b->getOwner();   // if it exists, return it!
+        return b->getOwner(); // if it exists, return it!
     }
 
     // no bit at index location
@@ -217,7 +218,8 @@ Player *TicTacToe::checkForWinner()
 bool TicTacToe::checkForDraw()
 {
     // is the board full with no winner?
-    if (checkForWinner()){
+    if (checkForWinner())
+    {
         return false;
     }
 
@@ -311,23 +313,26 @@ void TicTacToe::setStateString(const std::string &s)
 void TicTacToe::updateAI()
 {
     // don't try to play if game over
-    if(checkForDraw() || checkForWinner()){
+    if (checkForDraw() || checkForWinner())
+    {
         return;
     }
 
     // find all empty spaces
     std::string state = stateString();
     std::vector<int> empty;
-    for(int i = 0; i < state.length(); i++){
-        if(state[i] == '0'){
+    for (int i = 0; i < state.length(); i++)
+    {
+        if (state[i] == '0')
+        {
             empty.push_back(i);
         }
     }
 
     // pick one randomly
-    std::srand(std::time(0));   // seed rand()
+    std::srand(std::time(0)); // seed rand()
     int max = empty.size();
-    int random_index = empty[std::rand() % max]; 
+    int random_index = empty[std::rand() % max];
 
     // convert 1D to 2D coords
     int i = random_index % _gameOptions.rowX;

@@ -74,6 +74,7 @@ public:
 
 	virtual		void	stopGame() = 0;
     virtual     bool    gameHasAI();
+    virtual     void    setHasAI(bool b);
     virtual     void    updateAI();
 
 	virtual		std::string	initialStateString() = 0;

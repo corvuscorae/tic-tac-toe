@@ -29,7 +29,7 @@ public:
     void        stopGame() override;
 
 	void        updateAI() override;
-    bool        gameHasAI() override { return true; }
+    // bool        gameHasAI() override { return true; }
     BitHolder &getHolderAt(const int x, const int y) override { return _grid[y][x]; }
 private:
     Bit *       PieceForPlayer(const int playerNumber);
