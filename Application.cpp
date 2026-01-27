@@ -57,9 +57,6 @@ namespace ClassGame
 
         // ImGui::ShowDemoWindow();
 
-        // logging UI
-        logger->initUI();
-
         if (!game)
         {
             logger->Log("Game load failed.", logger->WARN, logger->GAME);
@@ -72,10 +69,13 @@ namespace ClassGame
         }
         ImGui::Begin("Settings");
         ImGui::Text("Current Player Number: %d", game->getCurrentPlayer()->playerNumber());
+
+        // logging UI
+        logger->initUI();
         ImGui::Text("Current Board State: %s", game->stateString().c_str());
 
         // AI toggle (only clickable between games)
-        if (!gameOver && !(game->stateString() == game->initialStateString()))
+        if (!(game->stateString() == game->initialStateString()))
         {
             ImGui::BeginDisabled();
         }
@@ -83,19 +83,12 @@ namespace ClassGame
         ImGui::Checkbox("AI", &AI_toggle);
         if (AI_toggle != game->gameHasAI())
         {
-            gameOver = true;
-            if (gameOver)
-            {
-                game->stopGame();
-                game->setHasAI(AI_toggle);
-                game->setUpBoard();
-
-                gameOver = false;
-                gameWinner = -1;
-            }
+            game->stopGame();
+            game->setHasAI(AI_toggle);
+            game->setUpBoard();
         }
 
-        if (!gameOver && !(game->stateString() == game->initialStateString()))
+        if (!(game->stateString() == game->initialStateString()))
         {
             ImGui::EndDisabled();
         }
