@@ -12,12 +12,27 @@
 
 struct LogItem
 {
-    const char *level;
-    const char *dat;
-    const char *type;
+    std::string level;
+    std::string dat;
+    std::string type;
     ImVec4 color;
 
     LogItem(const char *_level, const char *_dat, ImVec4 _col, const char *_type = NULL)
+    {
+        level = std::string(_level);
+        dat = std::string(_dat);
+        if (_type)
+        {
+            type = std::string(_type);
+        }
+        else
+        {
+            type = "";
+        }
+        color = _col;
+    }
+
+    LogItem(const char *_level, std::string _dat, ImVec4 _col, std::string _type = "")
     {
         level = _level;
         dat = _dat;
@@ -27,11 +42,11 @@ struct LogItem
 
     std::string print()
     {
-        std::string message = "[" + std::string(level) + "] ";
+        std::string message = "[" + level + "] ";
 
-        if (type)
+        if (type != "")
         {
-            message += "[" + std::string(type) + "] ";
+            message += "[" + type + "] ";
         }
 
         message += dat;
@@ -47,7 +62,7 @@ private:
     std::vector<LogItem> log;
     std::ofstream file;
     std::string filename;
-    static Logger* instance;
+    static Logger *instance;
 
     // UI
     bool show_game_panel = true;
@@ -66,16 +81,17 @@ public:
     int log_size = 0;
     bool to_console_enabled = true;
 
-    enum types {
+    enum types
+    {
         DEFAULT,
         GAME
     };
     const char *type_text[2] = {
         NULL,
-        "GAME"
-    };
+        "GAME"};
 
-    enum level {
+    enum level
+    {
         INFO,
         WARN,
         ERROR
@@ -83,18 +99,17 @@ public:
     const char *level_text[3] = {
         "INFO",
         "WARN",
-        "ERROR"
-    };
+        "ERROR"};
     const ImVec4 color[3] = {
         ImVec4(1, 1, 1, 1),
         ImVec4(1, 1, 0, 1),
-        ImVec4(1, 0, 0, 1)
-    };
+        ImVec4(1, 0, 0, 1)};
 
-    static Logger* GetInstance()
+    static Logger *GetInstance()
     {
         // (improved this function based on feedback from Graham)
-        if(instance == nullptr){
+        if (instance == nullptr)
+        {
             instance = new Logger();
         }
         return instance;
@@ -103,12 +118,13 @@ public:
     // FUNCTIONS
     void ToggleConsoleLog(bool b);
     void WriteLogToFile(
-        const std::string &_filename = "game_log.txt", 
-        bool show_info = true, 
-        bool show_warn = true, 
-        bool show_error = true
-    );
+        const std::string &_filename = "game_log.txt",
+        bool show_info = true,
+        bool show_warn = true,
+        bool show_error = true);
     void Log(const char *message, int lvl = 0, int type = NULL);
+    void Log(char *message, int lvl = 0, int type = NULL);
+    void Log(std::string message, int lvl = 0, int type = NULL);
     void clear();
     LogItem get(int i);
     std::string print_last();

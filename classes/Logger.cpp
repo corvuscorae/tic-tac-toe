@@ -53,6 +53,30 @@ void Logger::Log(const char *message, int lvl, int type){
     this->log_size++;
 }
 
+void Logger::Log(char *message, int lvl, int type){
+    LogItem new_item(level_text[lvl], message, color[lvl], type_text[type]);
+    this->log.push_back(new_item);
+
+    if (this->to_console_enabled)
+    {
+        std::cout << new_item.print() << std::endl;
+    }
+
+    this->log_size++;
+}
+
+void Logger::Log(std::string message, int lvl, int type){
+    LogItem new_item(level_text[lvl], message, color[lvl], type_text[type]);
+    this->log.push_back(new_item);
+
+    if (this->to_console_enabled)
+    {
+        std::cout << new_item.print() << std::endl;
+    }
+
+    this->log_size++;
+}
+
 void Logger::clear()
 {
     this->log.clear();
