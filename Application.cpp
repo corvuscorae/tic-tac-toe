@@ -75,10 +75,10 @@ namespace ClassGame
             ImGui::Text("Game Over!");
             ImGui::Text("Winner: %d", gameWinner);
 
-            // text indicating a draw
+            
             if (gameWinner == -1)
             {
-                ImGui::Text("DRAW");
+                ImGui::Text("DRAW"); // text indicating a draw
             }
 
             if (ImGui::Button("Reset Game"))

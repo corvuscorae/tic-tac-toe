@@ -1,5 +1,7 @@
 #include "TicTacToe.h"
 #include "Logger.h"
+#include <vector>
+#include <random>
 // -----------------------------------------------------------------------------
 // TicTacToe.cpp
 // -----------------------------------------------------------------------------
@@ -79,6 +81,9 @@ void TicTacToe::setUpBoard()
     }
 
     logger->Log("Board setup completed.", logger->INFO, logger->GAME);
+
+    // set AI player
+    setAIPlayer(AI_PLAYER);
 
     // blast off!
     startGame();
@@ -305,5 +310,31 @@ void TicTacToe::setStateString(const std::string &s)
 //
 void TicTacToe::updateAI()
 {
-    // we will implement the AI in the next assignment!
+    // don't try to play if game over
+    if(checkForDraw() || checkForWinner()){
+        return;
+    }
+
+    // find all empty spaces
+    std::string state = stateString();
+    std::vector<int> empty;
+    for(int i = 0; i < state.length(); i++){
+        if(state[i] == '0'){
+            empty.push_back(i);
+        }
+    }
+
+    // pick one randomly
+    std::srand(std::time(0));   // seed rand()
+    int max = empty.size();
+    int random_index = empty[std::rand() % max]; 
+
+    // convert 1D to 2D coords
+    int i = random_index % _gameOptions.rowX;
+    int j = random_index / _gameOptions.rowY;
+
+    // place AI bit
+    actionForEmptyHolder(&getHolderAt(j, i));
+    state = stateString();
+    endTurn();
 }
