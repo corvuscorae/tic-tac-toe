@@ -253,7 +253,7 @@ std::string TicTacToe::initialStateString()
 std::string TicTacToe::stateString() const
 {
     // this will hold our state
-    std::string state = "";
+    std::string state = "000000000";
 
     // loop through grid, build our state string where...
     // ...'0' = null, '1' = player 0, '2' = player 1
@@ -271,7 +271,7 @@ std::string TicTacToe::stateString() const
                 player = b->getOwner()->playerNumber() + 1;
             }
 
-            state += std::to_string(player);
+            state[j + i * _gameOptions.rowY] = player + '0';
         }
     }
 
