@@ -42,6 +42,7 @@ namespace ClassGame
         game = new TicTacToe();
         game->setHasAI(AI_toggle);
         game->setUpBoard();
+        // game->setStateString("121000222"); // testing
 
         logger->Log("Game started successfully");
         logger->Log("Application initialized", logger->INFO, logger->GAME);
