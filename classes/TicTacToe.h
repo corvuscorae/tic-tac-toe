@@ -35,6 +35,8 @@ private:
     Bit *       PieceForPlayer(const int playerNumber);
     Player*     ownerAt(int index ) const;
     int         randomAI(std::string &state);
+    int         getNextMove(std::string &state);
+    int         negamax(std::string &state, int depth, int alpha, int beta, int player);
 
     Square      _grid[3][3];
 };

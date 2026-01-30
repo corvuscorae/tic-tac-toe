@@ -27,7 +27,9 @@
 // -----------------------------------------------------------------------------
 
 const int AI_PLAYER = 1;    // index of the AI player (O)
-const int HUMAN_PLAYER = 0; // index of the human player (X)
+const int HUMAN_PLAYER = -1; // index of the human player (X)
+const char AI_COLOR = '2';
+const char HUMAN_COLOR = '1';
 
 Logger *logger = Logger::GetInstance();
 
@@ -317,20 +319,121 @@ void TicTacToe::updateAI()
     {
         return;
     }
+    
+    // get current board state
     std::string state = stateString();
 
-    int bitPlace = randomAI(state);
+    // find next move
+    int move = getNextMove(state);
 
-    // convert 1D to 2D coords
-    int i = bitPlace % _gameOptions.rowX;
-    int j = bitPlace / _gameOptions.rowY;
+    if(move != -1){
+        // convert 1D to 2D coords
+        int i = move % _gameOptions.rowX;
+        int j = move / _gameOptions.rowY;
 
-    // place AI bit
-    actionForEmptyHolder(&getHolderAt(j, i));
-    state = stateString();
+        // place AI bit
+        actionForEmptyHolder(&getHolderAt(j, i));
+        // state = stateString(); // TODO: check that i dont need this bc i think i dont
+    }
+    else {
+        logger->Log("AI turn failed: move not found", logger->ERROR, logger->GAME);
+    }
+
     endTurn();
 }
 
+int TicTacToe::getNextMove(std::string &state){
+    int bestMove = -1000;
+    int bestSquare = -1;
+
+    for(int i = 0; i < 9; i++){
+        if(state[i] == '0')
+        {
+            // place AI (push move onto stack)
+            state[i] = AI_COLOR;
+            
+            // evaluate move using negamax
+            int newValue = -negamax(state, 0, 0, 0, HUMAN_PLAYER);
+            
+            // update if newValue is better than our current best move's value
+            if(newValue > bestMove){
+                bestSquare = i;
+                bestMove = newValue;
+            }
+
+            // reset state (pop move from stack)
+            state[i] = '0';
+        }
+    }
+
+    return bestSquare;
+}
+
+bool aiCheckForFullBoard(std::string &state){
+    if(state.find('0') == std::string::npos){ 
+        // no empties found, board is full
+        return true;
+    }
+    return false;
+}
+
+int aiCheckForWin(std::string &state){
+    // array of winning triplets
+    // each int refers to a holder location, representing in 1D
+    int wins[8][3] = {
+        {0, 1, 2},
+        {3, 4, 5},
+        {6, 7, 8},
+        {0, 3, 6},
+        {1, 4, 7},
+        {2, 5, 8},
+        {0, 4, 8},
+        {2, 4, 6}};
+    
+    for (int i = 0; i < 8; i++){
+        char player = state[wins[i][0]];
+        if(player != '0' && player == state[wins[i][1]] && player == state[wins[i][2]]){
+            return 10;
+        }
+    }
+    return 0;
+}
+
+int TicTacToe::negamax(std::string &state, int depth, int alpha, int beta, int player){
+    int won = aiCheckForWin(state);
+    if(won != 0){
+        return -(won - depth);  // subtract depth to reward wins in fewer moves
+    }
+    if(aiCheckForFullBoard(state)){
+        // draw state
+        return 0;
+    }    
+
+    int bestValue = -1000;
+
+    for(int i = 0; i < 9; i++){
+        if(state[i] == '0'){
+            // whoever is passed into negamax plays a move
+            // place player (push move onto stack)
+            state[i] = player == HUMAN_PLAYER ? HUMAN_COLOR : AI_COLOR;
+
+            // evaluate next move
+            int newValue = -negamax(state, depth + 1, -beta, -alpha, -player);
+
+            // update if newValue is better than our current best move's value
+            if(newValue > bestValue){
+                bestValue = newValue;
+            }
+
+            // reset state (pop move from stack)
+            state[i] = '0';
+        }
+    }
+
+    return bestValue;
+}
+
+// legacy AI (very bad, only picks at random from available holders)
 int TicTacToe::randomAI(std::string &state){
     // find all empty spaces
     std::vector<int> empty;
