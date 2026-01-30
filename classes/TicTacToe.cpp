@@ -317,9 +317,22 @@ void TicTacToe::updateAI()
     {
         return;
     }
-
-    // find all empty spaces
     std::string state = stateString();
+
+    int bitPlace = randomAI(state);
+
+    // convert 1D to 2D coords
+    int i = bitPlace % _gameOptions.rowX;
+    int j = bitPlace / _gameOptions.rowY;
+
+    // place AI bit
+    actionForEmptyHolder(&getHolderAt(j, i));
+    state = stateString();
+    endTurn();
+}
+
+int TicTacToe::randomAI(std::string &state){
+    // find all empty spaces
     std::vector<int> empty;
     for (int i = 0; i < state.length(); i++)
     {
@@ -332,14 +345,5 @@ void TicTacToe::updateAI()
     // pick one randomly
     std::srand(std::time(0)); // seed rand()
     int max = empty.size();
-    int random_index = empty[std::rand() % max];
-
-    // convert 1D to 2D coords
-    int i = random_index % _gameOptions.rowX;
-    int j = random_index / _gameOptions.rowY;
-
-    // place AI bit
-    actionForEmptyHolder(&getHolderAt(j, i));
-    state = stateString();
-    endTurn();
+    return empty[std::rand() % max];
 }

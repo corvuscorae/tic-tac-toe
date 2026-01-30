@@ -34,6 +34,7 @@ public:
 private:
     Bit *       PieceForPlayer(const int playerNumber);
     Player*     ownerAt(int index ) const;
+    int         randomAI(std::string &state);
 
     Square      _grid[3][3];
 };

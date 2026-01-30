@@ -1,3 +1,5 @@
-First thing I did was to include my Logger class. I also made some QOL updates to make it easier to throw it into future projects (putting Logger UI calls all in a member function of the class). Next, I followed Graeme's comments to implement all of the necessary functions for a human vs. human game of Tic Tac Toe. Then, I made a (bad) AI that just picks a random empty holder to place its bit in. 
+First thing I did was to include my Logger class. I also made some QOL updates to make it easier to throw it into future projects (putting Logger UI calls all in a member function of the class). 
+
+Next, I followed Graeme's comments to implement all of the necessary functions for a human vs. human game of Tic Tac Toe. Then, I made a (bad) AI that just picks a random empty holder to place its bit in. 
 
 I wanted the AI player to be toggleable in-game, so I made some changes to the Game class and Application.cpp so that the player could toggle an AI opponent between matched. I added a setter in Game that alters _gameOptions.AIPlaying, and setUpBoard() now checks that bool before setting an AI player. I added a UI checkbox that is disabled during active games.
