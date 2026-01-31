@@ -255,7 +255,7 @@ std::string TicTacToe::initialStateString()
 std::string TicTacToe::stateString() const
 {
     // this will hold our state
-    std::string state = "";
+    std::string state = "000000000";
 
     // loop through grid, build our state string where...
     // ...'0' = null, '1' = player 0, '2' = player 1
@@ -273,7 +273,7 @@ std::string TicTacToe::stateString() const
                 player = b->getOwner()->playerNumber() + 1;
             }
 
-            state += std::to_string(player);
+            state[j + i * _gameOptions.rowY] = player + '0';
         }
     }
 
@@ -287,26 +287,29 @@ std::string TicTacToe::stateString() const
 //
 void TicTacToe::setStateString(const std::string &s)
 {
-    // set the state of the board from the given string
-    // the string will be 9 characters long, one for each square
-    // each character will be '0' for empty, '1' for player 1 (X), and '2' for player 2 (O)
-    // the order will be left-to-right, top-to-bottom
-    // for example, the starting state is "000000000"
-    // if player 1 has placed an X in the top-left and player 2 an O in the center, the state would be "100020000"
-    // you can loop through the string and set each square in _grid accordingly
-    // for example, if s[0] is '1', you would set _grid[0][0] to have player 1's piece
-    // if s[4] is '2', you would set _grid[1][1] to have player 2's piece
-    // if s[8] is '0', you would set _grid[2][2] to be empty
-    // you can use the PieceForPlayer function to create a new piece for a player
-    // remember to convert the character to an integer by subtracting '0'
-    // for example, int playerNumber = s[index] - '0';
-    // if playerNumber is 0, set the square to empty (nullptr)
-    // if playerNumber is 1 or 2, create a piece for that player and set it in the square
-    // finally, make sure to position the piece at the holder's position
-    // you can get the position of a holder using holder->getPosition()
-    // loop through the 3x3 array and set each square accordingly
-    // the string should always be valid, so you don't need to check its length or contents
-    // but you can assume it will always be 9 characters long and only contain '0', '1', or '2'
+    for (int k = 0; k < s.length(); k++)
+    {
+        int player_index = s[k] - '0';
+
+        int i = k % _gameOptions.rowX;
+        int j = k / _gameOptions.rowY;
+
+        if (player_index != 0)
+        {
+            Bit* b = PieceForPlayer(player_index - 1);
+            b->setPosition(_grid[i][j].getPosition());  // set bit's position to holder's position (in pixels)
+            _grid[i][j].setBit(b);
+            
+            std::string log = "Loaded bit for player " + std::to_string(player_index - 1);
+            logger->Log(log, logger->INFO, logger->GAME);
+        }
+        else
+        {
+            _grid[i][j].setBit(nullptr);
+        }
+    }
+
+    logger->Log("Game loaded from state string!", logger->INFO, logger->GAME);
 }
 
 //
