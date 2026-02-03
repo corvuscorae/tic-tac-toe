@@ -1,3 +1,5 @@
+COMPILED AND TESTED ON WINDOWS
+
 First thing I did was to include my Logger class. I also made some QOL updates to make it easier to throw it into future projects (putting Logger UI calls all in a member function of the class). 
 
 Next, I followed Graeme's comments to implement all of the necessary functions for a human vs. human game of Tic Tac Toe. Then, I made a (bad) AI that just picks a random empty holder to place its bit in. 
